@@ -16,7 +16,8 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+      // FIXME: need to fix the test
+      expect(appController.findNonWords()).toBe('Hello World!');
     });
   });
 });
