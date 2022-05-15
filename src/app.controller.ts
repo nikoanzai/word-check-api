@@ -6,7 +6,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('/find-non-words')
-  findNonWords(@Body('sentence') sentence: string): Promise<Array<string>> {
+  findNonWords(@Body('sentence') sentence: string): Array<string> {
     return this.appService.findNonWords(sentence);
   }
 }

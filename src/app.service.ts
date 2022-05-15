@@ -1,21 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
+import * as fs from 'fs';
 
 @Injectable()
 export class AppService {
-  constructor(private httpService: HttpService) {}
+  findNonWords(sentence: string): Array<string> {
+    if (!sentence) return [];
 
-  async findNonWords(sentence: string): Promise<Array<string>> {
-    // extract words. format can be "word", "we're", "ping-pong"
-    const words = sentence.match(/(\w+[-']\w+)|(\w+)/g);
+    // extract words and lower-case them.
+    // its format can be one of three: "word", "we're", "ping-pong"
+    const words = sentence
+      .match(/(\w+[-']\w+)|(\w+)/g)
+      .map((word) => word.toLowerCase());
 
-    const { data: allWords } = await firstValueFrom(
-      this.httpService.get(
-        'https://raw.githubusercontent.com/jeremy-rifkin/Wordlist/master/master.txt',
-      ),
-    );
+    // load words from file, lower-case them
+    const data = fs.readFileSync(`${__dirname}/words.txt`, 'utf8');
+    const allWords = data.split('\n').map((word) => word.toLowerCase());
 
+    // filter words that don't exist in allWords
     const nonWords = words.filter((word: string) => allWords.indexOf(word) < 0);
 
     return nonWords;
